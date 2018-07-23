@@ -15,6 +15,7 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
     public GameObject buttonTemplate;
     public GameObject musPageTemplate;
     public GameObject sideMenu;
+    public GameObject loader;
     public Transform contentPanel;
     public string groupName;
 
@@ -55,10 +56,14 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
 
     // for showing small page icons
     private int _previousPageSelectionIndex;
+
+    private float _updateTrackLength = 300.0f;
     #endregion
 
     #region Main Methors
     private void Start() {
+       // loader.GetComponent<RectTransform>().alpha = 0;
+
         _scrollRectComponent = GetComponent<ScrollRect>();
         _scrollRectRect = GetComponent<RectTransform>();
         _container = _scrollRectComponent.content;
@@ -66,6 +71,7 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
 
         StartCoroutine(RefreshPage());
     }
+    #region Enumerators
     IEnumerator RefreshPage() {
         switch (groupName) {
             case "museum": {
@@ -74,6 +80,7 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
                 string jsonNewString = wwwPath.text;
                 var node = JSON.Parse(jsonNewString);
                 Debug.Log("Whyyyyy");
+                RemoveMuseumButtons();
                 AddMuseumButtons(node);
                 break;
                 }
@@ -82,11 +89,21 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
                 yield return wwwPath;
                 string jsonNewString = wwwPath.text;
                 var node = JSON.Parse(jsonNewString);
+                RemoveFeedButtons();
                 AddFeedButtons(node);
                 break;
             }
+            default:
+                break;
         }
     }
+    /*IEnumerator FadeLoad() {
+        while (loader.GetComponent<CanvasGroup>().alpha > 0) {                   //use "< 1" when fading in
+            loader.GetComponent<CanvasGroup>().alpha -= Time.deltaTime / 1;    //fades out over 1 second. change to += to fade in    
+            yield return null;
+        }
+    }*/
+    #endregion
     void AddMuseumButtons(JSONNode n) {
         for (int i = 0; i < n["museum"].Count; ++i) {
             string tmp = n["museum"][i]["name"].Value;
@@ -173,27 +190,28 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
               Mathf.Abs(difference) > fastSwipeThresholdDistance &&
               Mathf.Abs(difference) < _fastSwipeThresholdMaxLimit) {*/
         if (Time.unscaledTime - _timeStamp > fastSwipeThresholdTime) {
-            if (difference > 300) {
+            if (difference > _updateTrackLength) {
                 Debug.Log("What??? Supply!");
                 /////
             }
-            else if (difference < -300)
+            else if (difference < -_updateTrackLength)
             {
                 Debug.Log("What??? Reload!");
                 if (groupName == "museum")
                 {
-                    RemoveMuseumButtons();
+                   // RemoveMuseumButtons();
                     Debug.Log("Removed");
                     StartCoroutine(RefreshPage());
                     Debug.Log("Refreshed");
                 }
                 else if (groupName == "feed")
                 {
-                    RemoveFeedButtons();
+                   // RemoveFeedButtons();
                     Debug.Log("Removed");
                     StartCoroutine(RefreshPage());
                     Debug.Log("Refreshed");
                 }
+               // StartCoroutine(FadeLoad());
             }
         }
 
@@ -208,6 +226,10 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
             _timeStamp = Time.unscaledTime;
             // save current position of cointainer
             _startPosition = _container.anchoredPosition;
+        }
+        if (Math.Abs(_startPosition.y - _container.anchoredPosition.y) > _updateTrackLength / 1.0) {
+            Debug.Log("HAHAHA");
+           // StartCoroutine(FadeLoad());
         }
 
     }
