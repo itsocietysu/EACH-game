@@ -22,9 +22,13 @@ public class FeedSampleButton : MonoBehaviour
         tex.LoadImage(decodedBytes);
         iconImage.texture = tex;
     }
-    public void Button_Click()
+    public string GetButtonName()
     {
-        scrollView.ButtonClicked(buttonName);
-
+        return buttonText.text;
     }
+   /* public void Button_Click()
+    {
+        scrollView.ButtonClicked(this);
+
+    }*/
 }

@@ -5,14 +5,20 @@ using UnityEngine.UI;
 
 public class MuseumSampleButton : MonoBehaviour {
     private string buttonName;
+    //private string description;
     public Text buttonText;
     public Font font;
     public RawImage iconImage;
     public Template_Scrollview scrollView;
 
+    public Text _description;
+
     public void SetName(string name) {
         buttonName = name + "_button";
         buttonText.text = name;
+    }
+    public void SetDesc(string description) {
+        _description.text = description;
     }
     public void SetIcon(byte[] decodedBytes)
     {
@@ -21,7 +27,13 @@ public class MuseumSampleButton : MonoBehaviour {
         iconImage.texture = tex;
     }
     public void Button_Click() {
-        scrollView.ButtonClicked(buttonName);
+        scrollView.ButtonClicked(this);
 
+    }
+    public string GetButtonName() {
+        return buttonText.text;
+    }
+    public Text GetDescription() {
+        return _description;
     }
 }

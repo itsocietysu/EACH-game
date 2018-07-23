@@ -13,11 +13,13 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
     string path;
     string jsonString;
     public GameObject buttonTemplate;
+    public GameObject musPageTemplate;
+    public GameObject sideMenu;
     public Transform contentPanel;
     public string groupName;
 
-    private List<GameObject> musButtonList = new List<GameObject>();
-    private List<GameObject> feedButtonList = new List<GameObject>();
+    public static List<GameObject> musButtonList = new List<GameObject>();
+    public static/*private*/ List<GameObject> feedButtonList = new List<GameObject>();
 
     //
     [Tooltip("Set starting page index - starting from 0")]
@@ -67,22 +69,22 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
     IEnumerator RefreshPage() {
         switch (groupName) {
             case "museum": {
-                    WWW wwwPath = new WWW("http://each.itsociety.su:4201/each/all/");
-                    yield return wwwPath;
-                    string jsonNewString = wwwPath.text;
-                    var node = JSON.Parse(jsonNewString);
-                    Debug.Log("Whyyyyy");
-                    AddMuseumButtons(node);
-                    break;
+                WWW wwwPath = new WWW("http://each.itsociety.su:4201/each/all");
+                yield return wwwPath;
+                string jsonNewString = wwwPath.text;
+                var node = JSON.Parse(jsonNewString);
+                Debug.Log("Whyyyyy");
+                AddMuseumButtons(node);
+                break;
                 }
             case "feed": {
-                    WWW wwwPath = new WWW("http://each.itsociety.su:4201/each/feed/");
-                    yield return wwwPath;
-                    string jsonNewString = wwwPath.text;
-                    var node = JSON.Parse(jsonNewString);
-                    AddFeedButtons(node);
-                    break;
-                }
+                WWW wwwPath = new WWW("http://each.itsociety.su:4201/each/feed/");
+                yield return wwwPath;
+                string jsonNewString = wwwPath.text;
+                var node = JSON.Parse(jsonNewString);
+                AddFeedButtons(node);
+                break;
+            }
         }
     }
     void AddMuseumButtons(JSONNode n) {
@@ -94,7 +96,9 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
             newButton.SetActive(true);
             MuseumSampleButton museumButton = newButton.GetComponent<MuseumSampleButton>();
             museumButton.SetName(tmp);
+            Debug.Log(n["museum"][i]["desc"].Value);
             museumButton.SetIcon(decodedBytes);
+            museumButton.SetDesc(n["museum"][i]["desc"].Value);
             newButton.transform.SetParent(buttonTemplate.transform.parent);
             musButtonList.Add(newButton);
         }
@@ -104,7 +108,7 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
         for (int i = 0; i < n["feed"].Count; ++i) {
             string tmp = n["feed"][i]["title"].Value;
             byte[] decodedBytes = Convert.FromBase64String(n["feed"][i]["image"].Value);
-            Debug.Log(tmp);
+            //Debug.Log(tmp);
             GameObject newButton = Instantiate(buttonTemplate) as GameObject;
             newButton.SetActive(true);
             FeedSampleButton museumButton = newButton.GetComponent<FeedSampleButton>();
@@ -125,8 +129,27 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
             Destroy(item);
         feedButtonList.Clear();
     }
-    public void ButtonClicked(string str) {
-        Debug.Log(str + " button clicked.");
+    public void ButtonClicked(MuseumSampleButton button) {
+        Debug.Log(button.name + " button clicked.");
+        switch (groupName) {
+            case "museum": {
+               // GameObject newMuseumPage = Instantiate(musPageTemplate) as GameObject;
+              //  newMuseumPage.SetActive(true);
+                    MuseumSamplePage museumSamplePage = sideMenu.GetComponent<MuseumSamplePage>();
+                //MuseumSamplePage museumSamplePage = newMuseumPage.GetComponent<MuseumSamplePage>();
+                  /*  newMuseumPage.transform.SetParent(button.transform.parent.parent.parent.parent.parent);
+                    Vector2 newPos = new Vector2(540f, 930f);
+                    Debug.Log(newPos);
+                    newMuseumPage.transform.position = newPos;*/
+                museumSamplePage.SetData(button);
+
+                break;
+
+            }
+            case "feed": {
+                break;
+            }
+        }
 
     }
     #endregion

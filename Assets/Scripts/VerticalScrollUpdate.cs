@@ -18,7 +18,7 @@ public class VerticalScrollUpdate : MonoBehaviour, IBeginDragHandler, IEndDragHa
     public int fastSwipeThresholdDistance = 100;
     [Tooltip("How fast will page lerp to target position")]
     public float decelerationRate = 10f;
-
+    public GameObject pageToClose;
 
     // fast swipes should be fast and short. If too long, then it is not fast swipe
     private int _fastSwipeThresholdMaxLimit;
@@ -145,18 +145,48 @@ public class VerticalScrollUpdate : MonoBehaviour, IBeginDragHandler, IEndDragHa
         difference = -(_startPosition.y - _container.anchoredPosition.y);
 
         // test for fast swipe - swipe that moves only +/-1 item
-       
-      /*  if (Time.unscaledTime - _timeStamp < fastSwipeThresholdTime && 
-            Mathf.Abs(difference) > fastSwipeThresholdDistance &&
-            Mathf.Abs(difference) < _fastSwipeThresholdMaxLimit) {*/
-            if (difference > 300)
-                Debug.Log("What??? Supply!");
+
+        /*  if (Time.unscaledTime - _timeStamp < fastSwipeThresholdTime && 
+              Mathf.Abs(difference) > fastSwipeThresholdDistance &&
+              Mathf.Abs(difference) < _fastSwipeThresholdMaxLimit) {*/
+        if (difference > 300)
+        {
+       //     _lerp = true;
+        }
             else if (difference < -300)
                 Debug.Log("What??? Reload!");
 
         _dragging = false;
     }
 
+    /*void Update() {
+        if (_lerp)
+        {
+            int width = (int)_scrollRectRect.rect.width;
+            int height = (int)_scrollRectRect.rect.height;
+            Debug.Log("What??? Supply!");
+            _lerpTo = new Vector2(0f, (2 * height));
+            float decelerate = Mathf.Min(decelerationRate * Time.deltaTime, 1f);
+            _container.anchoredPosition = Vector2.Lerp(_container.anchoredPosition, _lerpTo, decelerate);
+            // time to stop lerping?
+          //  if (Vector2.SqrMagnitude(_container.anchoredPosition - _lerpTo) < 0.25f)
+           // {
+                // snap to target and stop lerping
+                _container.anchoredPosition = _lerpTo;
+                _lerp = false;
+                // clear also any scrollrect move that may interfere with our lerping
+                _scrollRectComponent.velocity = Vector2.zero;
+                Debug.Log("???");
+                for (int i = 0; i < pageToClose.transform.childCount; i++)
+                {
+                    var child = pageToClose.transform.GetChild(i).gameObject;
+                    if (child != null)
+                        child.SetActive(false);
+                }
+                //pageToClose.;
+           // }
+        }
+    }*/
     //------------------------------------------------------------------------
     public void OnDrag(PointerEventData aEventData)
     {
