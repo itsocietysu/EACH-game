@@ -228,7 +228,7 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
             _startPosition = _container.anchoredPosition;
         }
         if (Math.Abs(_startPosition.y - _container.anchoredPosition.y) > _updateTrackLength / 1.0) {
-            Debug.Log("HAHAHA");
+           // Debug.Log("HAHAHA");
            // StartCoroutine(FadeLoad());
         }
 
