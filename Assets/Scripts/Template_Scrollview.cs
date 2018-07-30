@@ -62,20 +62,18 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
 
     #region Main Methors
     private void Start() {
-       // loader.GetComponent<RectTransform>().alpha = 0;
-
         _scrollRectComponent = GetComponent<ScrollRect>();
         _scrollRectRect = GetComponent<RectTransform>();
         _container = _scrollRectComponent.content;
         _lerp = false;
-
         StartCoroutine(RefreshPage());
     }
+
     #region Enumerators
     IEnumerator RefreshPage() {
         switch (groupName) {
             case "museum": {
-                WWW wwwPath = new WWW("http://each.itsociety.su:4201/each/all");
+                WWW wwwPath = new WWW("http://each.itsociety.su:4201/each/museum/all");
                 yield return wwwPath;
                 string jsonNewString = wwwPath.text;
                 var node = JSON.Parse(jsonNewString);
@@ -85,9 +83,10 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
                 break;
                 }
             case "feed": {
-                WWW wwwPath = new WWW("http://each.itsociety.su:4201/each/feed/");
+                WWW wwwPath = new WWW("http://each.itsociety.su:4201/each/feed/all");
                 yield return wwwPath;
                 string jsonNewString = wwwPath.text;
+                Debug.Log(jsonNewString);
                 var node = JSON.Parse(jsonNewString);
                 RemoveFeedButtons();
                 AddFeedButtons(node);
@@ -97,30 +96,54 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
                 break;
         }
     }
-    /*IEnumerator FadeLoad() {
-        while (loader.GetComponent<CanvasGroup>().alpha > 0) {                   //use "< 1" when fading in
-            loader.GetComponent<CanvasGroup>().alpha -= Time.deltaTime / 1;    //fades out over 1 second. change to += to fade in    
-            yield return null;
-        }
-    }*/
     #endregion
+    /*
     void AddMuseumButtons(JSONNode n) {
         for (int i = 0; i < n["museum"].Count; ++i) {
             string tmp = n["museum"][i]["name"].Value;
             byte[] decodedBytes = Convert.FromBase64String(n["museum"][i]["icon"].Value);
-            Debug.Log(tmp);
+            //Debug.Log(tmp);
             GameObject newButton = Instantiate(buttonTemplate) as GameObject;
             newButton.SetActive(true);
             MuseumSampleButton museumButton = newButton.GetComponent<MuseumSampleButton>();
             museumButton.SetName(tmp);
-            Debug.Log(n["museum"][i]["desc"].Value);
+           // Debug.Log(n["museum"][i]["desc"].Value);
             museumButton.SetIcon(decodedBytes);
             museumButton.SetDesc(n["museum"][i]["desc"].Value);
             newButton.transform.SetParent(buttonTemplate.transform.parent);
             musButtonList.Add(newButton);
         }
+    }
+    */
+    void AddMuseumButtons(JSONNode n) {
+        for (int i = 0; i < n.Count; ++i) {
+            string tmp = n[i]["name"].Value;
+            GameObject newButton = Instantiate(buttonTemplate) as GameObject;
+            newButton.SetActive(true);
+            MuseumSampleButton museumButton = newButton.GetComponent<MuseumSampleButton>();
+            museumButton.SetName(tmp);
+            StartCoroutine(museumButton.SetIcon(n[i]["image"][0]["url"].Value));
+            museumButton.SetDesc(n[i]["desc"].Value);
+            newButton.transform.SetParent(buttonTemplate.transform.parent);
+            musButtonList.Add(newButton);
+        }
+    }
+    void AddFeedButtons(JSONNode n) {
+        for (int i = 0; i < n.Count; ++i) {
+            string tmp = n[i]["title"].Value;
+            Debug.Log(tmp);
+            GameObject newButton = Instantiate(buttonTemplate) as GameObject;
+            newButton.SetActive(true);
+            FeedSampleButton museumButton = newButton.GetComponent<FeedSampleButton>();
+            museumButton.SetName(tmp);
+            Debug.Log(n[i]["image"][0]["url"].Value);
+            StartCoroutine(museumButton.SetIcon(n[i]["image"][0]["url"].Value));
+            newButton.transform.SetParent(buttonTemplate.transform.parent);
+            feedButtonList.Add(newButton);
+        }
 
     }
+    /*
     void AddFeedButtons(JSONNode n) {
         for (int i = 0; i < n["feed"].Count; ++i) {
             string tmp = n["feed"][i]["title"].Value;
@@ -136,6 +159,7 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
         }
 
     }
+    */
     void RemoveMuseumButtons() {
         foreach (GameObject item in musButtonList)
             Destroy(item);
@@ -150,18 +174,9 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
         Debug.Log(button.name + " button clicked.");
         switch (groupName) {
             case "museum": {
-               // GameObject newMuseumPage = Instantiate(musPageTemplate) as GameObject;
-              //  newMuseumPage.SetActive(true);
-                    MuseumSamplePage museumSamplePage = sideMenu.GetComponent<MuseumSamplePage>();
-                //MuseumSamplePage museumSamplePage = newMuseumPage.GetComponent<MuseumSamplePage>();
-                  /*  newMuseumPage.transform.SetParent(button.transform.parent.parent.parent.parent.parent);
-                    Vector2 newPos = new Vector2(540f, 930f);
-                    Debug.Log(newPos);
-                    newMuseumPage.transform.position = newPos;*/
+                MuseumSamplePage museumSamplePage = sideMenu.GetComponent<MuseumSamplePage>();
                 museumSamplePage.SetData(button);
-
                 break;
-
             }
             case "feed": {
                 break;
@@ -242,7 +257,16 @@ public class Museum {
     public string desc;
     public string icon;
 }
+/*
 public class Feed {
     public string title;
     public string image;
+}
+*/
+public class Feed {
+    public int eid;
+    public string title;
+    public string text;
+    public string image; 
+    public string url; 
 }

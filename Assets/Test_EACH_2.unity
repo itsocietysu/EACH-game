@@ -7960,6 +7960,7 @@ GameObject:
   - component: {fileID: 2145578373}
   - component: {fileID: 2145578372}
   - component: {fileID: 2145578371}
+  - component: {fileID: 2145578374}
   m_Layer: 0
   m_Name: Login_screen
   m_TagString: Untagged
@@ -8075,3 +8076,15 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &2145578374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2145578367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 404ffc909baba42ca93f8335c61dc731, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serverURL: http://each.itsociety.su:5000/oauth2/authorize
