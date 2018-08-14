@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Collections;
@@ -22,9 +22,8 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
     public static List<GameObject> musButtonList = new List<GameObject>();
     public static/*private*/ List<GameObject> feedButtonList = new List<GameObject>();
 
-    //
-    [Tooltip("Set starting page index - starting from 0")]
-    public int startingPage = 0;
+   // [Tooltip("Set starting page index - starting from 0")]
+   // public int startingPage = 0;
     [Tooltip("Threshold time for fast swipe in seconds")]
     public float fastSwipeThresholdTime = 0.3f;
     [Tooltip("Threshold time for fast swipe in (unscaled) pixels")]
@@ -61,6 +60,7 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
     #endregion
 
     #region Main Methors
+
     private void Start() {
         _scrollRectComponent = GetComponent<ScrollRect>();
         _scrollRectRect = GetComponent<RectTransform>();
@@ -97,24 +97,7 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
         }
     }
     #endregion
-    /*
-    void AddMuseumButtons(JSONNode n) {
-        for (int i = 0; i < n["museum"].Count; ++i) {
-            string tmp = n["museum"][i]["name"].Value;
-            byte[] decodedBytes = Convert.FromBase64String(n["museum"][i]["icon"].Value);
-            //Debug.Log(tmp);
-            GameObject newButton = Instantiate(buttonTemplate) as GameObject;
-            newButton.SetActive(true);
-            MuseumSampleButton museumButton = newButton.GetComponent<MuseumSampleButton>();
-            museumButton.SetName(tmp);
-           // Debug.Log(n["museum"][i]["desc"].Value);
-            museumButton.SetIcon(decodedBytes);
-            museumButton.SetDesc(n["museum"][i]["desc"].Value);
-            newButton.transform.SetParent(buttonTemplate.transform.parent);
-            musButtonList.Add(newButton);
-        }
-    }
-    */
+
     void AddMuseumButtons(JSONNode n) {
         for (int i = 0; i < n.Count; ++i) {
             string tmp = n[i]["name"].Value;
@@ -143,23 +126,6 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
         }
 
     }
-    /*
-    void AddFeedButtons(JSONNode n) {
-        for (int i = 0; i < n["feed"].Count; ++i) {
-            string tmp = n["feed"][i]["title"].Value;
-            byte[] decodedBytes = Convert.FromBase64String(n["feed"][i]["image"].Value);
-            //Debug.Log(tmp);
-            GameObject newButton = Instantiate(buttonTemplate) as GameObject;
-            newButton.SetActive(true);
-            FeedSampleButton museumButton = newButton.GetComponent<FeedSampleButton>();
-            museumButton.SetName(tmp);
-            museumButton.SetIcon(decodedBytes);
-            newButton.transform.SetParent(buttonTemplate.transform.parent);
-            feedButtonList.Add(newButton);
-        }
-
-    }
-    */
     void RemoveMuseumButtons() {
         foreach (GameObject item in musButtonList)
             Destroy(item);
@@ -209,19 +175,14 @@ public class Template_Scrollview : MonoBehaviour, IBeginDragHandler, IEndDragHan
                 Debug.Log("What??? Supply!");
                 /////
             }
-            else if (difference < -_updateTrackLength)
-            {
+            else if (difference < -_updateTrackLength) {
                 Debug.Log("What??? Reload!");
-                if (groupName == "museum")
-                {
-                   // RemoveMuseumButtons();
+                if (groupName == "museum") {
                     Debug.Log("Removed");
                     StartCoroutine(RefreshPage());
                     Debug.Log("Refreshed");
                 }
-                else if (groupName == "feed")
-                {
-                   // RemoveFeedButtons();
+                else if (groupName == "feed") {
                     Debug.Log("Removed");
                     StartCoroutine(RefreshPage());
                     Debug.Log("Refreshed");
@@ -257,12 +218,6 @@ public class Museum {
     public string desc;
     public string icon;
 }
-/*
-public class Feed {
-    public string title;
-    public string image;
-}
-*/
 public class Feed {
     public int eid;
     public string title;

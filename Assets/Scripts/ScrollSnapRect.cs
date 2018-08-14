@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
@@ -27,12 +27,12 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     public List<Sprite> selectedPage;
     [Tooltip("Container with page images (optional)")]
     public Transform pageSelectionIcons;
-    [Tooltip("a")]
+
     public GameObject footerFeedButton;
-    [Tooltip("b")]
+    public GameObject footerMapButton;
     public GameObject footerMusButton;
-    [Tooltip("c")]
     public GameObject footerPersButton;
+
 
     // fast swipes should be fast and short. If too long, then it is not fast swipe
     private int _fastSwipeThresholdMaxLimit;
@@ -65,12 +65,12 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     // container with Image components - one Image for each page
     private List<Image> _pageSelectionImages;
 
-    //------------------------------------------------------------------------
+  
     void Start() {
         _scrollRectComponent = GetComponent<ScrollRect>();
         _scrollRectRect = GetComponent<RectTransform>();
         _container = _scrollRectComponent.content;
-        _pageCount = 3;//_container.childCount;
+        _pageCount = 4;//_container.childCount;
 
         // is it horizontal or vertical scrollrect
         if (_scrollRectComponent.horizontal && !_scrollRectComponent.vertical) {
@@ -97,6 +97,8 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
             footerMusButton.GetComponent<Button>().onClick.AddListener(() => { MusScreen(); });
         if (footerPersButton)
             footerPersButton.GetComponent<Button>().onClick.AddListener(() => { PersScreen(); });
+        if (footerMapButton)
+            footerMapButton.GetComponent<Button>().onClick.AddListener(() => { MapScreen(); });
         
         if (nextButton)
             nextButton.GetComponent<Button>().onClick.AddListener(() => { NextScreen(); });
@@ -105,7 +107,6 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
             prevButton.GetComponent<Button>().onClick.AddListener(() => { PreviousScreen(); });
 	}
 
-    //------------------------------------------------------------------------
     void Update() {
         // if moving to target position
         if (_lerp) {
@@ -128,7 +129,6 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         }
     }
 
-    //------------------------------------------------------------------------
     private void SetPagePositions() {
         int width = 0;
         int height = 0;
@@ -176,14 +176,12 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         }
     }
 
-    //------------------------------------------------------------------------
     private void SetPage(int aPageIndex) {
         aPageIndex = Mathf.Clamp(aPageIndex, 0, _pageCount - 1);
         _container.anchoredPosition = _pagePositions[aPageIndex];
         _currentPage = aPageIndex;
     }
 
-    //------------------------------------------------------------------------
     private void LerpToPage(int aPageIndex) {
         aPageIndex = Mathf.Clamp(aPageIndex, 0, _pageCount - 1);
         _lerpTo = _pagePositions[aPageIndex];
@@ -191,7 +189,6 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         _currentPage = aPageIndex;
     }
 
-    //------------------------------------------------------------------------
     private void InitPageSelection() {
         // page selection - only if defined sprites for selection icons
         _showPageSelection = unselectedPage[0] != null && selectedPage[0] != null;
@@ -216,7 +213,6 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         }
     }
 
-    //------------------------------------------------------------------------
     private void SetPageSelection(int aPageIndex) {
         // nothing to change
         if (_previousPageSelectionIndex == aPageIndex) {
@@ -239,21 +235,18 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     private void FeedScreen() {
         LerpToPage(0);
     }
-    //------------------------------------------------------------------------
     private void MusScreen() {
-        LerpToPage(1);
-    }
-    //------------------------------------------------------------------------
-    private void PersScreen() {
         LerpToPage(2);
     }
-
-
-        //------------------------------------------------------------------------
+    private void PersScreen() {
+        LerpToPage(3);
+    }
+    private void MapScreen() {
+        LerpToPage(1);
+    }
     private void NextScreen() {
         LerpToPage(_currentPage + 1);
     }
-    //------------------------------------------------------------------------
     private void PreviousScreen() {
         LerpToPage(_currentPage - 1);
     }
@@ -285,7 +278,6 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         _dragging = false;
     }
 
-    //------------------------------------------------------------------------
     public void OnEndDrag(PointerEventData aEventData) {
         // how much was container's content dragged
         float difference;
@@ -312,7 +304,6 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         _dragging = false;
     }
 
-    //------------------------------------------------------------------------
     public void OnDrag(PointerEventData aEventData) {
         if (!_dragging) {
             // dragging started

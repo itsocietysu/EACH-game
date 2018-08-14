@@ -7,8 +7,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(Image))]
 [RequireComponent(typeof(Mask))]
 [RequireComponent(typeof(ScrollRect))]
-public class VerticalScrollUpdate : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
-{
+public class VerticalScrollUpdate : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler {
 
     [Tooltip("Set starting page index - starting from 0")]
     public int startingPage = 0;
@@ -53,8 +52,7 @@ public class VerticalScrollUpdate : MonoBehaviour, IBeginDragHandler, IEndDragHa
         _container = _scrollRectComponent.content;
         _lerp = false;
     }
-    public void OnBeginDrag(PointerEventData aEventData)
-    {
+    public void OnBeginDrag(PointerEventData aEventData) {
         // if currently lerping, then stop it as user is draging
         _lerp = false;
         // not dragging yet
@@ -62,8 +60,7 @@ public class VerticalScrollUpdate : MonoBehaviour, IBeginDragHandler, IEndDragHa
     }
 
     //------------------------------------------------------------------------
-    public void OnEndDrag(PointerEventData aEventData)
-    {
+    public void OnEndDrag(PointerEventData aEventData) {
         // how much was container's content dragged
         float difference;
 
@@ -83,10 +80,8 @@ public class VerticalScrollUpdate : MonoBehaviour, IBeginDragHandler, IEndDragHa
 
         _dragging = false;
     }
-    public void OnDrag(PointerEventData aEventData)
-    {
-        if (!_dragging)
-        {
+    public void OnDrag(PointerEventData aEventData) {
+        if (!_dragging) {
             // dragging started
             _dragging = true;
             // save time - unscaled so pausing with Time.scale should not affect it
